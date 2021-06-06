@@ -26,7 +26,7 @@
         },
         data() {
             return {
-                value: '2243282.2443224432'
+                value: '2323.342'
             }
         },
         methods: {

@@ -41,8 +41,9 @@
         },
 
         created() {
-            this.value && (this.thousandValue = this.comdify(this.value));
-            this.showPrepend && (this.prepend = this.getPrepend(this.thousandValue));
+
+            this.value && this.onInputEnter(this.thousandValue = this.comdify(this.value));
+            this.thousandValue && this.showPrepend && (this.prepend = this.getPrepend(this.thousandValue));
         },
 
         methods: {
@@ -56,13 +57,11 @@
 
                     // 如果删除了，只有0了，则清空输入框
                 } else if (e === '0') {
-                    this.thousandValue = ''
+                    this.thousandValue = '0'
                 }
-
                 // 验证金额输入只能为数字,以及一位小数点
                 if (this.maxAfterPoint !== 0) {
                     this.thousandValue = this.thousandValue.replace(/[^\d.]/g, '');
-
                     // 验证金额输入只能为正数
                 } else {
                     this.thousandValue = this.thousandValue.replace(/[^\d]/g, '');
@@ -76,7 +75,6 @@
 
                 // 千分符的转化
                 this.thousandValue = this.comdify(this.trueVal);
-
                 // 得到前缀提示
                 this.showPrepend && (this.prepend = this.getPrepend(this.thousandValue));
 
@@ -123,26 +121,30 @@
                 let num2 = pointStr[1];
                 let bNum = '';
                 let aNum = '';
-                console.log(n);
-                console.log(num1, num2);
                 if (this.maxBeforePoint && num1 && num1.length) {
                     bNum = `${num1.slice(0, this.maxBeforePoint)}`;
                     // 返回正常的数据
                 } else {
-                    bNum = num1;
+                    if(num1===undefined||num1===''){
+                        bNum = '0';
+										}else {
+                        bNum = num1;
+                    }
                 }
                 // 保留几位小数
                 if (this.maxAfterPoint && num2 && num2.length > this.maxAfterPoint) {
                     aNum = `${num2.slice(0, this.maxAfterPoint)}`;
                     // 返回正常的数据
                 } else {
+                    if(num2===undefined){
+                        return `${bNum}`;
+										}
                     aNum = num2;
                 }
-								return bNum+"."+aNum;
+								return `${bNum}.${aNum}`;
             },
             getPrepend(n) {
                 let count = n.split(',').length - 1;
-                console.log(typeof count);
                 let prepends = ['thousand', 'million', 'billion', 'trillion', 'quadrillion'];
                 if (count <= 0) {
                     return '';
